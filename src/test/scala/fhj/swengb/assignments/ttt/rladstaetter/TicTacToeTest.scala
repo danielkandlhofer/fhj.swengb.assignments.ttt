@@ -1,5 +1,6 @@
 package fhj.swengb.assignments.ttt.rladstaetter
 
+import fhj.swengb.assignments.ttt.dkandlhofer._
 import org.junit.Assert._
 import org.junit.Test
 

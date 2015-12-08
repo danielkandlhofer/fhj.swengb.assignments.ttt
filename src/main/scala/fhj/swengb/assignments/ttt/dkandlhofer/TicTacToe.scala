@@ -59,6 +59,33 @@ case object PlayerB extends Player
 
 object TicTacToe {
 
+  def main(args:Array[String]):Unit = {
+
+    var gameBoard = List.fill[Char](3,3)(' ')
+
+    def makeRow(row: List[Char]) {
+      var left = "|" + " " + row(0) + " |"
+      var middle = " " + row(1) + " |"
+      var right = " " + row(2) + " " + "|"
+      println(left.concat(middle).concat(right))
+    }
+
+    def render() {
+     // clearScreen
+      val divider = "|---|---|---|"
+      println(divider)
+      makeRow(gameBoard(0))
+      println(divider)
+      makeRow(gameBoard(1))
+      println(divider)
+      makeRow(gameBoard(2))
+      println(divider)
+    }
+
+    def clearScreen = (1 to 30).foreach(_ => println("\n"))
+
+    render()
+  }
   /**
     * creates an empty tic tac toe game
     * @return
@@ -80,16 +107,9 @@ object TicTacToe {
     * @return
     */
   def mkGames(): Map[Seq[TMove], TicTacToe] = ???
-
 }
+  //Map(Seq(TopLeft,TopCenter,TopRight)->TicTacToe),Map(Seq(MiddleLeft,MiddleCenter,MiddleRight)->TicTacToe),Seq(BottomLeft,BottomCenter,BottomRight),Seq(TopLeft,MiddleCenter,BottomRight),Seq(TopRight,MiddleCenter,BottomLeft))
 
-/**
-  * Models the well known tic tac toe game.
-  *
-  * The map holds the information which player controls which field.
-  *
-  * The nextplayer parameter defines which player makes the next move.
-  */
 case class TicTacToe(moveHistory: Map[TMove, Player],
                      nextPlayer: Player = PlayerA) {
 
@@ -107,7 +127,15 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     *
     * @return
     */
-  def asString(): String = ???
+  def asString(): String = {
+    val divide = "|---|---|---|"
+    val first = "| x | o | x |"
+    divide
+    val middle="| o | x | x |"
+    divide
+    val last = "| x | o | o |"
+    divide
+  }
 
   /**
     * is true if the game is over.
@@ -142,7 +170,7 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     * @param player the player
     * @return
     */
-  def turn(p: TMove, player: Player): TicTacToe = ???
+  def turn(move: TMove, player: Player): TicTacToe = ???
 
 }
 
