@@ -1,4 +1,4 @@
-package fhj.swengb.assignments.ttt.rladstaetter
+package fhj.swengb.assignments.ttt.dkandlhofer
 
 import fhj.swengb.assignments.ttt.dkandlhofer._
 import org.junit.Assert._
