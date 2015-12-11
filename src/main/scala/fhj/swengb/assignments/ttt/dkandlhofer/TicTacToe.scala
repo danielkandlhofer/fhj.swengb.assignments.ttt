@@ -1,6 +1,6 @@
 package fhj.swengb.assignments.ttt.dkandlhofer
 
-import scala.collection.Set
+import scala.collection.mutable.Set
 
 /**
   * models the different moves the game allows
@@ -85,12 +85,28 @@ object TicTacToe {
     def clearScreen = (1 to 30).foreach(_ => println("\n"))
 
     render()
+
+    /*val ttt = List(TopLeft,TopCenter,TopRight,MiddleLeft,MiddleCenter,MiddleRight,BottomLeft,BottomCenter,BottomRight)
+    println(ttt)
+    println(TopCenter.idx)
+
+    println(TicTacToe().asString())
+*/
+
+    val board = List(TopLeft.idx,TopCenter,TopRight,MiddleLeft,MiddleCenter,MiddleRight,BottomLeft,BottomCenter,BottomRight)
+    board.grouped(3).foreach(row => println(row(0)+" "+row(1)+" "+row(2))).toString
+  val empty:Map[TMove,Player] =Map()
+  println(TicTacToe(empty).asString())
   }
   /**
     * creates an empty tic tac toe game
     * @return
     */
   def apply(): TicTacToe = ???
+  /*TicTacToe(Map((TopLeft,PlayerC),(TopCenter,PlayerC),(TopRight,PlayerC),
+        (MiddleLeft,PlayerC),(MiddleCenter,PlayerC),(MiddleRight,PlayerC),
+        (BottomLeft,PlayerC),(BottomCenter,PlayerC),(BottomRight,PlayerC)))
+*/
 
   /**
     * For a given tic tac toe game, this function applies all moves to the game.
@@ -106,9 +122,18 @@ object TicTacToe {
     * creates all possible games.
     * @return
     */
-  def mkGames(): Map[Seq[TMove], TicTacToe] = ???
+  def mkGames(): Map[Seq[TMove], TicTacToe] = {
+    val games = Seq((TopLeft, TopCenter, TopRight),
+      (MiddleLeft, MiddleCenter, MiddleRight),
+      (BottomLeft, BottomCenter, BottomRight),
+      (TopLeft, MiddleLeft, BottomLeft),
+      (TopCenter, MiddleCenter, BottomCenter),
+      (TopRight, MiddleRight, BottomRight),
+      (TopLeft, MiddleCenter, BottomRight),
+      (TopRight, MiddleCenter, BottomLeft))
+    mkGames()
+  }
 }
-  //Map(Seq(TopLeft,TopCenter,TopRight)->TicTacToe),Map(Seq(MiddleLeft,MiddleCenter,MiddleRight)->TicTacToe),Seq(BottomLeft,BottomCenter,BottomRight),Seq(TopLeft,MiddleCenter,BottomRight),Seq(TopRight,MiddleCenter,BottomLeft))
 
 case class TicTacToe(moveHistory: Map[TMove, Player],
                      nextPlayer: Player = PlayerA) {
@@ -128,14 +153,12 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     * @return
     */
   def asString(): String = {
-    val divide = "|---|---|---|"
-    val first = "| x | o | x |"
-    divide
-    val middle="| o | x | x |"
-    divide
-    val last = "| x | o | o |"
-    divide
-  }
+    s"|$TopLeft|---|---|\n| x | o | x |\n|---|---|---|\n| o | x | x |\n|---|---|---|\n| x | o | o |\n|---|---|---|"
+  }/*
+  {
+    val board = List(TopLeft,TopCenter,TopRight,MiddleLeft,MiddleCenter,MiddleRight,BottomLeft,BottomCenter,BottomRight)
+    board.grouped(3).foreach(row => println(row(0)+" "+row(1)+" "+row(2))).toString
+  }*/
 
   /**
     * is true if the game is over.
@@ -147,7 +170,8 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
   /**
     * the moves which are still to be played on this tic tac toe.
     */
-  val remainingMoves: Set[TMove] = ???
+  val remainingMoves : Set[TMove] = Set(TopLeft,TopCenter,TopRight,MiddleLeft,MiddleCenter,MiddleRight,BottomLeft,BottomCenter,BottomRight)
+
 
   /**
     * given a tic tac toe game, this function returns all
@@ -170,7 +194,18 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     * @param player the player
     * @return
     */
-  def turn(move: TMove, player: Player): TicTacToe = ???
+  def turn(move: TMove, player: Player): TicTacToe = {
+    if(player==PlayerA){
+      val newHistory = moveHistory updated (move,PlayerA)
+      remainingMoves.-(move)
+      return TicTacToe(newHistory,PlayerB)
+    }
+    else {
+      val newMap = Map(move -> player)
+      remainingMoves.-(move)
+      return TicTacToe(newMap,PlayerA)
+    }
+  }
 
 }
 
