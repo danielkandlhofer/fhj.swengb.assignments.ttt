@@ -1,6 +1,6 @@
 package fhj.swengb.assignments.ttt.dkandlhofer
 
-import scala.collection.mutable.Set
+import scala.collection.Set
 
 /**
   * models the different moves the game allows
@@ -57,8 +57,10 @@ case object PlayerA extends Player
 
 case object PlayerB extends Player
 
-object TicTacToe {
+case object Draw extends Player
 
+object TicTacToe {
+/*
   def main(args:Array[String]):Unit = {
 
     var gameBoard = List.fill[Char](3,3)(' ')
@@ -97,16 +99,12 @@ object TicTacToe {
     board.grouped(3).foreach(row => println(row(0)+" "+row(1)+" "+row(2))).toString
   val empty:Map[TMove,Player] =Map()
   println(TicTacToe(empty).asString())
-  }
+  }*/
   /**
     * creates an empty tic tac toe game
     * @return
     */
-  def apply(): TicTacToe = ???
-  /*TicTacToe(Map((TopLeft,PlayerC),(TopCenter,PlayerC),(TopRight,PlayerC),
-        (MiddleLeft,PlayerC),(MiddleCenter,PlayerC),(MiddleRight,PlayerC),
-        (BottomLeft,PlayerC),(BottomCenter,PlayerC),(BottomRight,PlayerC)))
-*/
+  def apply(): TicTacToe = TicTacToe(Map())
 
   /**
     * For a given tic tac toe game, this function applies all moves to the game.
@@ -122,7 +120,7 @@ object TicTacToe {
     * creates all possible games.
     * @return
     */
-  def mkGames(): Map[Seq[TMove], TicTacToe] = {
+  def mkGames(): Map[Seq[TMove], TicTacToe] = ??? /*{
     val games = Seq((TopLeft, TopCenter, TopRight),
       (MiddleLeft, MiddleCenter, MiddleRight),
       (BottomLeft, BottomCenter, BottomRight),
@@ -132,7 +130,7 @@ object TicTacToe {
       (TopLeft, MiddleCenter, BottomRight),
       (TopRight, MiddleCenter, BottomLeft))
     mkGames()
-  }
+  }*/
 }
 
 case class TicTacToe(moveHistory: Map[TMove, Player],
@@ -165,12 +163,15 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     *
     * The game is over if either of a player wins or there is a draw.
     */
-  val gameOver : Boolean = ???
+  val gameOver : Boolean = if(winner != None) true else false
 
   /**
     * the moves which are still to be played on this tic tac toe.
     */
-  val remainingMoves : Set[TMove] = Set(TopLeft,TopCenter,TopRight,MiddleLeft,MiddleCenter,MiddleRight,BottomLeft,BottomCenter,BottomRight)
+  val remainingMoves : Set[TMove] = {
+    val moves : Set[TMove]= Set(TopLeft,TopCenter,TopRight,MiddleLeft,MiddleCenter,MiddleRight,BottomLeft,BottomCenter,BottomRight)
+    moves diff moveHistory.keySet
+  }
 
 
   /**
@@ -185,7 +186,26 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     *
     * The set of moves contains all moves which contributed to the result.
     */
-  def winner: Option[(Player, Set[TMove])] = ???
+  def winner: Option[(Player, Set[TMove])] = {
+    def checkTicTacToe(pMoves: Set[TMove]): Boolean = pMoves match {
+      case r1 if r1.contains(TopLeft) && r1.contains(TopCenter) && r1.contains(TopRight) => true
+      case r2 if r2.contains(MiddleLeft) && r2.contains(MiddleCenter) && r2.contains(MiddleRight) => true
+      case r3 if r3.contains(BottomLeft) && r3.contains(BottomCenter) && r3.contains(BottomRight) => true
+      case c1 if c1.contains(TopLeft) && c1.contains(MiddleLeft) && c1.contains(BottomLeft) => true
+      case c2 if c2.contains(TopCenter) && c2.contains(MiddleCenter) && c2.contains(BottomCenter) => true
+      case c3 if c3.contains(TopRight) && c3.contains(MiddleRight) && c3.contains(BottomRight) => true
+      case d1 if d1.contains(TopLeft) && d1.contains(MiddleCenter) && d1.contains(BottomRight) => true
+      case d2 if d2.contains(TopRight) && d2.contains(MiddleCenter) && d2.contains(BottomLeft) => true
+      case _ => false
+    }
+    val Amoves = moveHistory.filter(_._2==PlayerA).keySet
+    val Bmoves = moveHistory.filter(_._2==PlayerB).keySet
+
+    if(checkTicTacToe(Amoves)) Some(PlayerA,Amoves)
+    else if(checkTicTacToe(Bmoves)) Some(PlayerB,Bmoves)
+    else if(moveHistory.size == 9) Some(Draw, moveHistory.keySet)
+    else None
+  }
 
   /**
     * returns a copy of the current game, but with the move applied to the tic tac toe game.
@@ -197,13 +217,11 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
   def turn(move: TMove, player: Player): TicTacToe = {
     if(player==PlayerA){
       val newHistory = moveHistory updated (move,PlayerA)
-      remainingMoves.-(move)
       return TicTacToe(newHistory,PlayerB)
     }
     else {
-      val newMap = Map(move -> player)
-      remainingMoves.-(move)
-      return TicTacToe(newMap,PlayerA)
+      val newHistory = moveHistory updated (move,PlayerA)
+      return TicTacToe(newHistory,PlayerA)
     }
   }
 
