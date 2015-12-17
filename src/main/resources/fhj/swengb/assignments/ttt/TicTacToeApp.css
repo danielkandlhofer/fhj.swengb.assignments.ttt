@@ -1,0 +1,9 @@
+.round-red {
+    -fx-background-color: linear-gradient(#ff5400, #be1d00);
+    -fx-text-fill: white;
+    -fx-border-color: #FFF;
+}
+.round-red:hover {
+    -fx-background-color: black;
+    -fx-text-fill: red;
+}

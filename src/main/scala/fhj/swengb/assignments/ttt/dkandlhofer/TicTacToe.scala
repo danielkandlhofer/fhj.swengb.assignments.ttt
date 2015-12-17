@@ -150,13 +150,15 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     *
     * @return
     */
-  def asString(): String = {
-    s"|$TopLeft|---|---|\n| x | o | x |\n|---|---|---|\n| o | x | x |\n|---|---|---|\n| x | o | o |\n|---|---|---|"
-  }/*
-  {
-    val board = List(TopLeft,TopCenter,TopRight,MiddleLeft,MiddleCenter,MiddleRight,BottomLeft,BottomCenter,BottomRight)
-    board.grouped(3).foreach(row => println(row(0)+" "+row(1)+" "+row(2))).toString
-  }*/
+  def asString(): String =   {
+  def setOrNot(m: TMove): String = moveHistory match {
+      case not if !moveHistory.contains(m) => "   "
+      case x if x.apply(m)==PlayerA => " X "
+      case o if o.apply(m)==PlayerB => " O "
+    }
+
+    "|---|---|---|\n|"+setOrNot(TopLeft)+"|"+setOrNot(TopCenter)+"|"+setOrNot(TopRight)+"|\n|---|---|---|\n|"+setOrNot(MiddleLeft)+"|"+setOrNot(MiddleCenter)+"|"+setOrNot(MiddleRight)+"|\n|---|---|---|\n|"+setOrNot(BottomLeft)+"|"+setOrNot(BottomCenter)+"|"+setOrNot(BottomRight)+"|\n|---|---|---|"
+  }
 
   /**
     * is true if the game is over.
@@ -216,11 +218,11 @@ case class TicTacToe(moveHistory: Map[TMove, Player],
     */
   def turn(move: TMove, player: Player): TicTacToe = {
     if(player==PlayerA){
-      val newHistory = moveHistory updated (move,PlayerA)
+      val newHistory = moveHistory updated (move,player)
       return TicTacToe(newHistory,PlayerB)
     }
     else {
-      val newHistory = moveHistory updated (move,PlayerA)
+      val newHistory = moveHistory updated (move,player)
       return TicTacToe(newHistory,PlayerA)
     }
   }
